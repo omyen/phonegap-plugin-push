@@ -193,10 +193,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             Log.d(LOG_TAG, "create notification");
 
             createNotification(context, extras);
-        } else {
-            Log.d(LOG_TAG, "send notification event");
-            PushPlugin.sendExtras(extras);
         }
+        
+        Log.d(LOG_TAG, "send notification event");
+        PushPlugin.sendExtras(extras);
+        
     }
 
     public void createNotification(Context context, Bundle extras) {
@@ -205,7 +206,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         String packageName = context.getPackageName();
         Resources resources = context.getResources();
 
-        int notId = parseInt(NOT_ID, extras);
+        int notId = 1337;
         Intent notificationIntent = new Intent(this, PushHandlerActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         notificationIntent.putExtra(PUSH_BUNDLE, extras);
