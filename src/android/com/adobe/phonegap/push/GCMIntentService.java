@@ -385,7 +385,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             String sizeListMessage = sizeList.toString();
 
             NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                    .setBigContentTitle("DoubleDip")
+                    .setBigContentTitle("DoubleDip");
 
             for (int i = messageList.size() - 1; i >= 0; i--) {
                 Log.d(LOG_TAG, "[setNotificationMessage] Info=\"adding message to inbox\" notId=" + notId + " i=" + i);
