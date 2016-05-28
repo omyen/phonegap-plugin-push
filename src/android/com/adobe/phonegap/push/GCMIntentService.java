@@ -381,15 +381,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         Integer sizeList = messageList.size();
         if (sizeList > 1) {
             Log.d(LOG_TAG, "[setNotificationMessage] Info=\"stacking in inbox\" notId=" + notId + " length=" + messageList.size());
+            mBuilder.setNumber(sizeList);
             String sizeListMessage = sizeList.toString();
-            String stacking = sizeList + " more";
-            if (extras.getString(SUMMARY_TEXT) != null) {
-                stacking = extras.getString(SUMMARY_TEXT);
-                stacking = stacking.replace("%n%", sizeListMessage);
-            }
+
             NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                    .setBigContentTitle(extras.getString(TITLE))
-                    .setSummaryText(stacking);
+                    .setBigContentTitle("DoubleDip")
 
             for (int i = messageList.size() - 1; i >= 0; i--) {
                 Log.d(LOG_TAG, "[setNotificationMessage] Info=\"adding message to inbox\" notId=" + notId + " i=" + i);
