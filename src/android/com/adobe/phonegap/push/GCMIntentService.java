@@ -213,10 +213,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             createNotification(context, extras);
         }
 
-        if ("1".equals(contentAvailable)) {
-            Log.d(LOG_TAG, "send notification event");
-            PushPlugin.sendExtras(extras);
-        }
+        Log.d(LOG_TAG, "send notification event");
+        PushPlugin.sendExtras(extras);
     }
 
     public void createNotification(Context context, Bundle extras) {
@@ -225,7 +223,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         String packageName = context.getPackageName();
         Resources resources = context.getResources();
 
-        int notId = parseInt(NOT_ID, extras);
+        int notId = Math.floor(Math.random() * 1000000000);
         Intent notificationIntent = new Intent(this, PushHandlerActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         notificationIntent.putExtra(PUSH_BUNDLE, extras);
@@ -408,74 +406,38 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     private void setNotificationMessage(int notId, Bundle extras, NotificationCompat.Builder mBuilder) {
         String message = extras.getString(MESSAGE);
 
-        String style = extras.getString(STYLE, STYLE_TEXT);
-        if(STYLE_INBOX.equals(style)) {
-            setNotification(notId, message);
 
-            mBuilder.setContentText(fromHtml(message));
+        setNotification(notId, message);
 
-            ArrayList<String> messageList = messageMap.get(notId);
-            Integer sizeList = messageList.size();
-            if (sizeList > 1) {
-                String sizeListMessage = sizeList.toString();
-                String stacking = sizeList + " more";
-                if (extras.getString(SUMMARY_TEXT) != null) {
-                    stacking = extras.getString(SUMMARY_TEXT);
-                    stacking = stacking.replace("%n%", sizeListMessage);
-                }
-                NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                        .setBigContentTitle(fromHtml(extras.getString(TITLE)))
-                        .setSummaryText(fromHtml(stacking));
+        mBuilder.setContentText(fromHtml(message));
 
-                for (int i = messageList.size() - 1; i >= 0; i--) {
-                    notificationInbox.addLine(fromHtml(messageList.get(i)));
-                }
-
-                mBuilder.setStyle(notificationInbox);
-            } else {
-                NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
-                if (message != null) {
-                    bigText.bigText(fromHtml(message));
-                    bigText.setBigContentTitle(fromHtml(extras.getString(TITLE)));
-                    mBuilder.setStyle(bigText);
-                }
+        ArrayList<String> messageList = messageMap.get(notId);
+        Integer sizeList = messageList.size();
+        if (sizeList > 1) {
+            String sizeListMessage = sizeList.toString();
+            String stacking = sizeList + " more";
+            if (extras.getString(SUMMARY_TEXT) != null) {
+                stacking = extras.getString(SUMMARY_TEXT);
+                stacking = stacking.replace("%n%", sizeListMessage);
             }
-        } else if (STYLE_PICTURE.equals(style)) {
-            setNotification(notId, "");
+            NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
+                    .setBigContentTitle(fromHtml(extras.getString(TITLE)))
+                    .setSummaryText(fromHtml(stacking));
 
-            NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle();
-            bigPicture.bigPicture(getBitmapFromURL(extras.getString(PICTURE)));
-            bigPicture.setBigContentTitle(fromHtml(extras.getString(TITLE)));
-            bigPicture.setSummaryText(fromHtml(extras.getString(SUMMARY_TEXT)));
+            for (int i = messageList.size() - 1; i >= 0; i--) {
+                notificationInbox.addLine(fromHtml(messageList.get(i)));
+            }
 
-            mBuilder.setContentTitle(fromHtml(extras.getString(TITLE)));
-            mBuilder.setContentText(fromHtml(message));
-
-            mBuilder.setStyle(bigPicture);
+            mBuilder.setStyle(notificationInbox);
         } else {
-            setNotification(notId, "");
-
             NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
-
             if (message != null) {
-                mBuilder.setContentText(fromHtml(message));
-
                 bigText.bigText(fromHtml(message));
                 bigText.setBigContentTitle(fromHtml(extras.getString(TITLE)));
-
-                String summaryText = extras.getString(SUMMARY_TEXT);
-                if (summaryText != null) {
-                    bigText.setSummaryText(fromHtml(summaryText));
-                }
-
                 mBuilder.setStyle(bigText);
             }
-            /*
-            else {
-                mBuilder.setContentText("<missing message content>");
-            }
-            */
         }
+
     }
 
     private void setNotificationSound(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
