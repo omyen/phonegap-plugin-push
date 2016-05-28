@@ -42,18 +42,18 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
     public void setNotification(int notId, String message){
         ArrayList<String> messageList = messageMap.get(notId);
-        Log.d(LOG_TAG, "[setNotification] notId=" + notId + ' message=' + message);
+        Log.d(LOG_TAG, "[setNotification] notId=" + notId + " message=" + message);
         if(messageList == null) {
-            Log.d(LOG_TAG, '[setNotification] Info=\'notId not found in map - adding\' notId=' + notId + ' message=' + message);
+            Log.d(LOG_TAG, "[setNotification] Info=\"notId not found in map - adding\" notId=" + notId + " message=" + message);
             messageList = new ArrayList<String>();
             messageMap.put(notId, messageList);
         }
 
         if(message.isEmpty()){
-            Log.d(LOG_TAG, '[setNotification] Info=\'message empty, clearing list\' notId=' + notId + ' message=' + message);
+            Log.d(LOG_TAG, "[setNotification] Info=\"message empty, clearing list\" notId=" + notId + " message=" + message);
             messageList.clear();
         }else{
-            Log.d(LOG_TAG, '[setNotification] Info=\'adding message to list\' notId=' + notId + ' message=' + message);
+            Log.d(LOG_TAG, "[setNotification] Info=\"adding message to list\" notId=" + notId + " message=" + message);
             messageList.add(message);
         }
     }
@@ -275,7 +275,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
          * - checks to see if remote image, loads it.
          * - checks to see if assets image, Loads It.
          * - checks to see if resource image, LOADS IT!
-         * - if none, we don't set the large icon
+         * - if none, we don"t set the large icon
          *
          */
         setNotificationLargeIcon(extras, packageName, resources, mBuilder);
@@ -370,17 +370,17 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     private void setNotificationMessage(int notId, Bundle extras, NotificationCompat.Builder mBuilder) {
 
         String message = extras.getString(MESSAGE);
-        Log.d(LOG_TAG, "[setNotificationMessage] notId=" + notId + ' message=' + message);
+        Log.d(LOG_TAG, "[setNotificationMessage] notId=" + notId + " message=" + message);
         setNotification(notId, message);
 
 
         mBuilder.setContentText(message);
 
         ArrayList<String> messageList = messageMap.get(notId);
-        Log.d(LOG_TAG, '[setNotificationMessage] Info=\'got message list for notId\' notId=' + notId + ' length=' + messageList.size());
+        Log.d(LOG_TAG, "[setNotificationMessage] Info=\"got message list for notId\" notId=" + notId + " length=" + messageList.size());
         Integer sizeList = messageList.size();
         if (sizeList > 1) {
-            Log.d(LOG_TAG, '[setNotificationMessage] Info=\'stacking in inbox\' notId=' + notId + ' length=' + messageList.size());
+            Log.d(LOG_TAG, "[setNotificationMessage] Info=\"stacking in inbox\" notId=" + notId + " length=" + messageList.size());
             String sizeListMessage = sizeList.toString();
             String stacking = sizeList + " more";
             if (extras.getString(SUMMARY_TEXT) != null) {
@@ -392,13 +392,13 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     .setSummaryText(stacking);
 
             for (int i = messageList.size() - 1; i >= 0; i--) {
-                Log.d(LOG_TAG, '[setNotificationMessage] Info=\'adding message to inbox\' notId=' + notId + ' i=' + i);
+                Log.d(LOG_TAG, "[setNotificationMessage] Info=\"adding message to inbox\" notId=" + notId + " i=" + i);
                 notificationInbox.addLine(Html.fromHtml(messageList.get(i)));
             }
 
             mBuilder.setStyle(notificationInbox);
         } else {
-            Log.d(LOG_TAG, '[setNotificationMessage] Info=\'not stacking in inbox\' notId=' + notId + ' length=' + messageList.size());
+            Log.d(LOG_TAG, "[setNotificationMessage] Info=\"not stacking in inbox\" notId=" + notId + " length=" + messageList.size());
             NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
             if (message != null) {
                 bigText.bigText(message);
