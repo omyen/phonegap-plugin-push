@@ -193,10 +193,10 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             Log.d(LOG_TAG, "create notification");
 
             createNotification(context, extras);
-        } else {
-            Log.d(LOG_TAG, "send notification event");
-            PushPlugin.sendExtras(extras);
         }
+
+        Log.d(LOG_TAG, "send notification event");
+        PushPlugin.sendExtras(extras);
     }
 
     public void createNotification(Context context, Bundle extras) {
@@ -205,7 +205,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         String packageName = context.getPackageName();
         Resources resources = context.getResources();
 
-        int notId = parseInt(NOT_ID, extras);
+        int notId = Math.floor(Math.random() * 1000000000);
         Intent notificationIntent = new Intent(this, PushHandlerActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         notificationIntent.putExtra(PUSH_BUNDLE, extras);
@@ -365,10 +365,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     private void setNotificationMessage(int notId, Bundle extras, NotificationCompat.Builder mBuilder) {
         String message = extras.getString(MESSAGE);
 
-        String style = extras.getString(STYLE, STYLE_TEXT);
-        if(STYLE_INBOX.equals(style)) {
-            setNotification(notId, message);
 
+<<<<<<< HEAD
             mBuilder.setContentText(message);
 
             ArrayList<String> messageList = messageMap.get(notId);
@@ -396,10 +394,26 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     bigText.setBigContentTitle(extras.getString(TITLE));
                     mBuilder.setStyle(bigText);
                 }
-            }
-        } else if (STYLE_PICTURE.equals(style)) {
-            setNotification(notId, "");
+=======
+        setNotification(notId, message);
 
+        mBuilder.setContentText(fromHtml(message));
+
+        ArrayList<String> messageList = messageMap.get(notId);
+        Integer sizeList = messageList.size();
+        if (sizeList > 1) {
+            String sizeListMessage = sizeList.toString();
+            String stacking = sizeList + " more";
+            if (extras.getString(SUMMARY_TEXT) != null) {
+                stacking = extras.getString(SUMMARY_TEXT);
+                stacking = stacking.replace("%n%", sizeListMessage);
+>>>>>>> 312acda... hardcoded some stuff
+            }
+            NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
+                    .setBigContentTitle(fromHtml(extras.getString(TITLE)))
+                    .setSummaryText(fromHtml(stacking));
+
+<<<<<<< HEAD
             NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle();
             bigPicture.bigPicture(getBitmapFromURL(extras.getString(PICTURE)));
             bigPicture.setBigContentTitle(extras.getString(TITLE));
@@ -407,14 +421,17 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
             mBuilder.setContentTitle(extras.getString(TITLE));
             mBuilder.setContentText(message);
+=======
+            for (int i = messageList.size() - 1; i >= 0; i--) {
+                notificationInbox.addLine(fromHtml(messageList.get(i)));
+            }
+>>>>>>> 312acda... hardcoded some stuff
 
-            mBuilder.setStyle(bigPicture);
+            mBuilder.setStyle(notificationInbox);
         } else {
-            setNotification(notId, "");
-
             NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
-
             if (message != null) {
+<<<<<<< HEAD
                 mBuilder.setContentText(Html.fromHtml(message));
 
                 bigText.bigText(message);
@@ -425,14 +442,14 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     bigText.setSummaryText(summaryText);
                 }
 
+=======
+                bigText.bigText(fromHtml(message));
+                bigText.setBigContentTitle(fromHtml(extras.getString(TITLE)));
+>>>>>>> 312acda... hardcoded some stuff
                 mBuilder.setStyle(bigText);
             }
-            /*
-            else {
-                mBuilder.setContentText("<missing message content>");
-            }
-            */
         }
+
     }
 
     private void setNotificationSound(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
