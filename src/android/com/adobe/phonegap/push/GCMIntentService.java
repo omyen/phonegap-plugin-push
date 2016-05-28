@@ -365,73 +365,35 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     private void setNotificationMessage(int notId, Bundle extras, NotificationCompat.Builder mBuilder) {
         String message = extras.getString(MESSAGE);
 
-        String style = extras.getString(STYLE, STYLE_TEXT);
-        if(STYLE_INBOX.equals(style)) {
-            setNotification(notId, message);
+        setNotification(notId, message);
 
-            mBuilder.setContentText(message);
+        mBuilder.setContentText(message);
 
-            ArrayList<String> messageList = messageMap.get(notId);
-            Integer sizeList = messageList.size();
-            if (sizeList > 1) {
-                String sizeListMessage = sizeList.toString();
-                String stacking = sizeList + " more";
-                if (extras.getString(SUMMARY_TEXT) != null) {
-                    stacking = extras.getString(SUMMARY_TEXT);
-                    stacking = stacking.replace("%n%", sizeListMessage);
-                }
-                NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                        .setBigContentTitle(extras.getString(TITLE))
-                        .setSummaryText(stacking);
-
-                for (int i = messageList.size() - 1; i >= 0; i--) {
-                    notificationInbox.addLine(Html.fromHtml(messageList.get(i)));
-                }
-
-                mBuilder.setStyle(notificationInbox);
-            } else {
-                NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
-                if (message != null) {
-                    bigText.bigText(message);
-                    bigText.setBigContentTitle(extras.getString(TITLE));
-                    mBuilder.setStyle(bigText);
-                }
+        ArrayList<String> messageList = messageMap.get(notId);
+        Integer sizeList = messageList.size();
+        if (sizeList > 1) {
+            String sizeListMessage = sizeList.toString();
+            String stacking = sizeList + " more";
+            if (extras.getString(SUMMARY_TEXT) != null) {
+                stacking = extras.getString(SUMMARY_TEXT);
+                stacking = stacking.replace("%n%", sizeListMessage);
             }
-        } else if (STYLE_PICTURE.equals(style)) {
-            setNotification(notId, "");
+            NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
+                    .setBigContentTitle(extras.getString(TITLE))
+                    .setSummaryText(stacking);
 
-            NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle();
-            bigPicture.bigPicture(getBitmapFromURL(extras.getString(PICTURE)));
-            bigPicture.setBigContentTitle(extras.getString(TITLE));
-            bigPicture.setSummaryText(extras.getString(SUMMARY_TEXT));
+            for (int i = messageList.size() - 1; i >= 0; i--) {
+                notificationInbox.addLine(Html.fromHtml(messageList.get(i)));
+            }
 
-            mBuilder.setContentTitle(extras.getString(TITLE));
-            mBuilder.setContentText(message);
-
-            mBuilder.setStyle(bigPicture);
+            mBuilder.setStyle(notificationInbox);
         } else {
-            setNotification(notId, "");
-
             NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
-
             if (message != null) {
-                mBuilder.setContentText(Html.fromHtml(message));
-
                 bigText.bigText(message);
                 bigText.setBigContentTitle(extras.getString(TITLE));
-
-                String summaryText = extras.getString(SUMMARY_TEXT);
-                if (summaryText != null) {
-                    bigText.setSummaryText(summaryText);
-                }
-
                 mBuilder.setStyle(bigText);
             }
-            /*
-            else {
-                mBuilder.setContentText("<missing message content>");
-            }
-            */
         }
     }
 
