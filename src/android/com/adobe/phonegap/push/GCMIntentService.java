@@ -365,36 +365,6 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     private void setNotificationMessage(int notId, Bundle extras, NotificationCompat.Builder mBuilder) {
         String message = extras.getString(MESSAGE);
 
-
-<<<<<<< HEAD
-            mBuilder.setContentText(message);
-
-            ArrayList<String> messageList = messageMap.get(notId);
-            Integer sizeList = messageList.size();
-            if (sizeList > 1) {
-                String sizeListMessage = sizeList.toString();
-                String stacking = sizeList + " more";
-                if (extras.getString(SUMMARY_TEXT) != null) {
-                    stacking = extras.getString(SUMMARY_TEXT);
-                    stacking = stacking.replace("%n%", sizeListMessage);
-                }
-                NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                        .setBigContentTitle(extras.getString(TITLE))
-                        .setSummaryText(stacking);
-
-                for (int i = messageList.size() - 1; i >= 0; i--) {
-                    notificationInbox.addLine(Html.fromHtml(messageList.get(i)));
-                }
-
-                mBuilder.setStyle(notificationInbox);
-            } else {
-                NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
-                if (message != null) {
-                    bigText.bigText(message);
-                    bigText.setBigContentTitle(extras.getString(TITLE));
-                    mBuilder.setStyle(bigText);
-                }
-=======
         setNotification(notId, message);
 
         mBuilder.setContentText(fromHtml(message));
@@ -407,45 +377,21 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             if (extras.getString(SUMMARY_TEXT) != null) {
                 stacking = extras.getString(SUMMARY_TEXT);
                 stacking = stacking.replace("%n%", sizeListMessage);
->>>>>>> 312acda... hardcoded some stuff
             }
             NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
                     .setBigContentTitle(fromHtml(extras.getString(TITLE)))
                     .setSummaryText(fromHtml(stacking));
 
-<<<<<<< HEAD
-            NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle();
-            bigPicture.bigPicture(getBitmapFromURL(extras.getString(PICTURE)));
-            bigPicture.setBigContentTitle(extras.getString(TITLE));
-            bigPicture.setSummaryText(extras.getString(SUMMARY_TEXT));
-
-            mBuilder.setContentTitle(extras.getString(TITLE));
-            mBuilder.setContentText(message);
-=======
             for (int i = messageList.size() - 1; i >= 0; i--) {
                 notificationInbox.addLine(fromHtml(messageList.get(i)));
             }
->>>>>>> 312acda... hardcoded some stuff
 
             mBuilder.setStyle(notificationInbox);
         } else {
             NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
             if (message != null) {
-<<<<<<< HEAD
-                mBuilder.setContentText(Html.fromHtml(message));
-
-                bigText.bigText(message);
-                bigText.setBigContentTitle(extras.getString(TITLE));
-
-                String summaryText = extras.getString(SUMMARY_TEXT);
-                if (summaryText != null) {
-                    bigText.setSummaryText(summaryText);
-                }
-
-=======
                 bigText.bigText(fromHtml(message));
                 bigText.setBigContentTitle(fromHtml(extras.getString(TITLE)));
->>>>>>> 312acda... hardcoded some stuff
                 mBuilder.setStyle(bigText);
             }
         }
