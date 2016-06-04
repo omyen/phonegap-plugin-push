@@ -80,14 +80,14 @@ static char launchNotificationKey;
         NSLog(@"app in-active");
         
         // do some convoluted logic to find out if this should be a silent push.
-        long silent = 0;
-        id aps = [userInfo objectForKey:@"aps"];
-        id contentAvailable = [aps objectForKey:@"content-available"];
-        if ([contentAvailable isKindOfClass:[NSString class]] && [contentAvailable isEqualToString:@"1"]) {
-            silent = 1;
-        } else if ([contentAvailable isKindOfClass:[NSNumber class]]) {
-            silent = [contentAvailable integerValue];
-        }
+        long silent = 1;
+        // id aps = [userInfo objectForKey:@"aps"];
+        // id contentAvailable = [aps objectForKey:@"content-available"];
+        // if ([contentAvailable isKindOfClass:[NSString class]] && [contentAvailable isEqualToString:@"1"]) {
+        //     silent = 1;
+        // } else if ([contentAvailable isKindOfClass:[NSNumber class]]) {
+        //     silent = [contentAvailable integerValue];
+        // }
         
         if (silent == 1) {
             NSLog(@"this should be a silent push");
